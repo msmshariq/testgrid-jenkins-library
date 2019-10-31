@@ -82,10 +82,12 @@ def call() {
                                     log.info("The testgrid.yaml location: ${props.TESTGRID_YAML_URL}")
                                     withCredentials([string(credentialsId: "GIT_WUM_USERNAME", variable: 'user'),
                                                      string(credentialsId: "GIT_WUM_PASSWORD", variable: 'pass')]) {
-                                        log.info("testgrid.yaml path: ${props.WORKSPACE}/${props.TESTGRID_YAML_LOCATION}" )
+                                        log.info("testgrid.yaml path: ${props.WORKSPACE} - ${props.TESTGRID_YAML_LOCATION}" )
                                         sh """
                                         set +x
                                         curl --silent -k -o ${props.WORKSPACE}/${props.TESTGRID_YAML_LOCATION} ${props.TESTGRID_YAML_URL}
+                                        echo "testgrid.yaml content: "
+                                        cat ${props.WORKSPACE}/${props.TESTGRID_YAML_LOCATION}
                                         """
                                     }
                                 } else {
@@ -114,7 +116,6 @@ def call() {
                                 }
 
                                 def tgYamlContent = readYaml file: "${props.WORKSPACE}/${props.TESTGRID_YAML_LOCATION}"
-                                log.info("testgrid.yaml content: \n" + tgYamlContent)
                                 if (tgYamlContent.isEmpty() || tgYamlContent.infrastructureConfig == null) {
                                     throw new Exception("Invalid testgrid.yaml file found. Aborting build.")
                                 }
