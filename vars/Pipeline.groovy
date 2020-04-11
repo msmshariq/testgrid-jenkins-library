@@ -175,6 +175,9 @@ def call() {
             }
 
             stage('parallel-run') {
+                    agent {
+                        label "${props.AGENT_NODE_LABEL}"
+                    }
                     steps {
                         wrap([$class: 'MaskPasswordsBuildWrapper']) {
                             script {
